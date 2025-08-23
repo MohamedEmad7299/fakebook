@@ -1,26 +1,42 @@
-import 'package:fakebook/core/routing/routes.dart';
-import 'package:fakebook/features/login/cubit/login_cubit.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../features/home/home_screen.dart';
-import '../../features/login/login_screen.dart';
-import '../../features/sign_up/register.dart';
-import '../../features/splash/splash_screen.dart';
+import 'package:fakebook/core/routing/routes.dart';
+import 'package:fakebook/features/home/home_screen.dart';
+import 'package:fakebook/features/login/presentation/login_screen.dart';
+import 'package:fakebook/features/splash/splash_screen.dart';
+import '../../features/home/cubit/cubit.dart';
+import '../../features/register/cubit/register_cubit.dart';
+import '../../features/register/register_screen.dart';
 
 final router = GoRouter(
+  initialLocation: Routes.login,
   routes: [
+
     GoRoute(
-        path: Routes.splash, builder: (context, state) => const SplashScreen()),
+      path: Routes.splash,
+      builder: (context, state) => const SplashScreen(),
+    ),
+
     GoRoute(
-        path: Routes.register, builder: (context, state) => RegisterScreen()),
-    GoRoute(
-      path: Routes.login,
+      path: Routes.register,
       builder: (context, state) => BlocProvider(
-        create: (_) => LoginCubit(),
-        child: LoginScreen(),
+        create: (_) => RegisterCubit(),
+        child: RegisterScreen(),
       ),
     ),
-    GoRoute(path: Routes.home, builder: (context, state) => const HomeScreen()),
+
+    GoRoute(
+      path: Routes.login,
+      builder: (context, state) => LoginScreen(),
+    ),
+
+    GoRoute(
+      path: Routes.home,
+      builder: (context, state) => BlocProvider(
+        create: (_) => HomeCubit(),
+        child: HomeScreen(),
+      ),
+    ),
   ],
 );
