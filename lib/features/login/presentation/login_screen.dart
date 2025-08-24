@@ -1,5 +1,4 @@
 
-
 import 'package:fakebook/core/routing/routes.dart';
 import 'package:fakebook/features/login/presentation/login_controller.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +9,8 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
 
-class LoginScreen extends ConsumerWidget {
+class LoginScreen extends StatelessWidget {
+
   LoginScreen({super.key});
 
   final _emailController = TextEditingController();
@@ -18,9 +18,7 @@ class LoginScreen extends ConsumerWidget {
   final _formKey = GlobalKey<FormState>();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final passwordVisibilityState = ref.watch(passwordVisibilityProvider);
-    final isLoading = ref.watch(loadingProvider);
+  Widget build(BuildContext context) {
 
     return Scaffold(
       appBar: AppBar(),
@@ -56,63 +54,73 @@ class LoginScreen extends ConsumerWidget {
                   label: 'Email',
                 ),
                 const SizedBox(height: 16.0),
-                CustomFormField(
-                  controller: _passwordController,
-                  keyboardType: TextInputType.visiblePassword,
-                  validator: (value) => value == null || value.isEmpty
-                      ? 'Password must not be empty'
-                      : null,
-                  obscureText: !passwordVisibilityState,
-                  suffixIcon: passwordVisibilityState
-                      ? Icons.visibility_outlined
-                      : Icons.visibility_off_outlined,
-                  onSuffixIconPressed: () {
-                    togglePasswordVisibility(ref);
+                Consumer(
+                  builder: (context , ref, _){
+                    final passwordVisibilityState = ref.watch(loginPasswordVisibilityProvider);
+                    return CustomFormField(
+                      controller: _passwordController,
+                      keyboardType: TextInputType.visiblePassword,
+                      validator: (value) => value == null || value.isEmpty
+                          ? 'Password must not be empty'
+                          : null,
+                      obscureText: !passwordVisibilityState,
+                      suffixIcon: passwordVisibilityState
+                          ? Icons.visibility_outlined
+                          : Icons.visibility_off_outlined,
+                      onSuffixIconPressed: () {
+                        loginTogglePasswordVisibility(ref);
+                      },
+                      prefixIcon: Icons.lock_outline,
+                      label: 'Password',
+                    );
                   },
-                  prefixIcon: Icons.lock_outline,
-                  label: 'Password',
                 ),
                 const SizedBox(height: AppSpacing.paddingLarge),
-                SizedBox(
-                  width: double.infinity,
-                  height: 60,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          AppSpacing.radiusMedium,
-                        ),
-                      ),
-                    ),
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        ref.read(loadingProvider.notifier).state = true;
-                        try {
-                          await ref.read(
-                            loginProvider(
-                              LoginRequest(
-                                email: _emailController.text.trim(),
-                                password: _passwordController.text.trim(),
+                Consumer(
+                    builder: (context, ref, _){
+                      final isLoading = ref.watch(loginLoadingProvider);
+                      return SizedBox(
+                        width: double.infinity,
+                        height: 60,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                AppSpacing.radiusMedium,
                               ),
-                            ).future,
-                          );
-                          context.push(Routes.home);
-                        } catch (e) {
-                          Exception(e.toString());
-                        } finally {
-                          ref.read(loadingProvider.notifier).state = false;
-                        }
-                      }
-                    },
-                    child: isLoading
-                        ? const CircularProgressIndicator(color: Colors.white)
-                        : const Text(
+                            ),
+                          ),
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate()) {
+                              ref.read(loginLoadingProvider.notifier).state = true;
+                              try {
+                                await ref.read(
+                                  loginProvider(
+                                    LoginRequest(
+                                      email: _emailController.text.trim(),
+                                      password: _passwordController.text.trim(),
+                                    ),
+                                  ).future,
+                                );
+                                context.push(Routes.home);
+                              } catch (e) {
+                                Exception(e.toString());
+                              } finally {
+                                ref.read(loginLoadingProvider.notifier).state = false;
+                              }
+                            }
+                          },
+                          child: isLoading
+                              ? const CircularProgressIndicator(color: Colors.white)
+                              : const Text(
                             'LOGIN',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                  ),
+                        ),
+                      );
+                    }
                 ),
                 const SizedBox(height: AppSpacing.paddingLarge),
                 Row(
