@@ -1,5 +1,6 @@
 
 import 'package:fakebook/core/routing/routes.dart';
+import 'package:fakebook/core/widgets/components.dart';
 import 'package:fakebook/features/login/presentation/login_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -106,7 +107,7 @@ class LoginScreen extends StatelessWidget {
                                 );
                                 context.push(Routes.home);
                               } catch (e) {
-                                Exception(e.toString());
+                                toast(msg: e.toString());
                               } finally {
                                 ref.read(loginLoadingProvider.notifier).state = false;
                               }

@@ -9,10 +9,6 @@ class LoginRepository{
 
   Future<void> login({required String email, required String password}) async {
 
-    try {
-      await authService.login(email: email, password: password);
-    } catch (e) {
-        throw Exception(e.toString());
-    }
+    await authService.login(email: email, password: password);
   }
 }

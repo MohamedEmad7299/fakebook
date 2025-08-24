@@ -1,4 +1,5 @@
 
+import 'package:fakebook/core/widgets/components.dart';
 import 'package:fakebook/features/register/presentation/register_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -121,11 +122,9 @@ class RegisterScreen extends StatelessWidget {
                                   .future);
                               context.push(Routes.home);
                             } catch (e) {
-                              throw Exception(e.toString());
+                              toast(msg: e.toString());
                             } finally {
-                              ref
-                                  .watch(registerLoadingProvider.notifier)
-                                  .state = false;
+                              ref.watch(registerLoadingProvider.notifier).state = false;
                             }
                           }
                         },

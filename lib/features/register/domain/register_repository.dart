@@ -13,15 +13,11 @@ class RegisterRepository{
     required String phone,
   }) async {
 
-    try {
-      return await _authService.register(
-        name: name,
-        email: email,
-        password: password,
-        phone: phone,
-      );
-    } catch (e) {
-      throw Exception(e.toString());
-    }
+    return await _authService.register(
+      name: name,
+      email: email,
+      password: password,
+      phone: phone,
+    );
   }
 }
